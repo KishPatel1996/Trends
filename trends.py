@@ -119,16 +119,24 @@ def extract_words(text):
     ['cat', 'on', 'my', 'keyboard']
     """
     "*** YOUR CODE HERE ***"
+    #empty list will be added to with temp_text.
     text_list_to_return=[]
+    #temp_text will concatenate with ascii letters.  If there is a none ASCII letter, temp_text will
+    # be added to the list above and set back to the empty string
     temp_text=""
+    #for loop running through each letter
     for x in text:
+       #if ascii letter, it is added to temp_text
        if x in ascii_letters:
          temp_text+=x
        else:
+         #making sure empty string is not being added to the return list
          if temp_text!="":
+           #adds temp_text word to the list and resets temp_text back to empty string
            text_list_to_return+=[temp_text]
            temp_text=""
-
+    # temp_text may still have a value that has not been added to the return list since the for loop has terminated! 
+    #this is a check for any stored letter
     if temp_text!="":
       return text_list_to_return+[temp_text]
     return text_list_to_return

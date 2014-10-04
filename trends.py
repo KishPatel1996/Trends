@@ -209,7 +209,12 @@ def analyze_tweet_sentiment(tweet):
     False
     """
     "*** YOUR CODE HERE ***"
-    return make_sentiment(None)
+    list_of_words=tweet_words(tweet)
+    sentiments=[sentiment_value(get_word_sentiment(word) for word in list_of_words if has_sentiment(get_word_sentiment(word))]
+    if sentiments==[]:
+      return make_sentiment(None)
+    
+    return make_sentiment(sum(sentiments)/len(sentiments))
 
 
 #################################

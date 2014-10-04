@@ -40,15 +40,17 @@ def make_tweet(text, time, lat, lon):
 def tweet_text(tweet):
     """Return a string, the words in the text of a tweet."""
     "*** YOUR CODE HERE ***"
+    return tweet[0]
 
 def tweet_time(tweet):
     """Return the datetime representing when a tweet was posted."""
     "*** YOUR CODE HERE ***"
+    return tweet[1]
 
 def tweet_location(tweet):
     """Return a position representing a tweet's location."""
     "*** YOUR CODE HERE ***"
-
+    return make_position(tweet[2],tweet[3])
 
 # tweet data abstraction (B), represented as a function
 # -----------------------------------------------------
@@ -66,6 +68,17 @@ def make_tweet_fn(text, time, lat, lon):
     """
     # Please don't call make_tweet in your solution
     "*** YOUR CODE HERE ***"
+    def helper(word):
+      if word=="text":
+        return text
+      elif word=="time":
+        return time
+      elif word =="lat":
+        return lat
+      else:
+        return lon
+
+    return helper
 
 def tweet_text_fn(tweet):
     """Return a string, the words in the text of a functional tweet."""

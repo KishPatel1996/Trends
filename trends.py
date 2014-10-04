@@ -3,7 +3,13 @@
 from data import word_sentiments, load_tweets
 from datetime import datetime
 from geo import us_states, geo_distance, make_position, longitude, latitude
-from maps import draw_state, draw_name, draw_dot, wait
+try:
+    import tkinter
+    from maps import draw_state, draw_name, draw_dot, wait
+    HAS_TKINTER = True
+except ImportError as e:
+    print('Could not load tkinter: ' + str(e))
+    HAS_TKINTER = False
 from string import ascii_letters
 from ucb import main, trace, interact, log_current_line
 
@@ -135,7 +141,7 @@ def extract_words(text):
            #adds temp_text word to the list and resets temp_text back to empty string
            text_list_to_return+=[temp_text]
            temp_text=""
-    # temp_text may still have a value that has not been added to the return list since the for loop has terminated! 
+    # temp_text may still have a value that has not been added to the return list since the for loop has terminated!
     #this is a check for any stored letter
     if temp_text!="":
       return text_list_to_return+[temp_text]
@@ -161,6 +167,7 @@ def make_sentiment(value):
     assert (value is None) or (-1 <= value <= 1), 'Bad sentiment value'
     "*** YOUR CODE HERE ***"
     return [value]
+
 def has_sentiment(s):
     """Return whether sentiment s has a value."""
     "*** YOUR CODE HERE ***"
@@ -213,7 +220,7 @@ def analyze_tweet_sentiment(tweet):
     sentiments=[sentiment_value(get_word_sentiment(word) for word in list_of_words if has_sentiment(get_word_sentiment(word))]
     if sentiments==[]:
       return make_sentiment(None)
-    
+
     return make_sentiment(sum(sentiments)/len(sentiments))
 
 
@@ -337,6 +344,16 @@ def average_sentiments(tweets_by_state):
 # Command Line Interface #
 ##########################
 
+def uses_tkinter(func):
+    """A decorator that designates a function as one that uses tkinter.
+    If tkinter is not supported, will not allow these functions to run.
+    """
+    def tkinter_checked(*args, **kwargs):
+        if HAS_TKINTER:
+            return func(*args, **kwargs)
+        print('tkinter not supported, cannot call {0}'.format(func.__name__))
+    return tkinter_checked
+
 def print_sentiment(text='Are you virtuous or verminous?'):
     """Print the words in text, annotated by their sentiment scores."""
     words = extract_words(text.lower())
@@ -346,6 +363,7 @@ def print_sentiment(text='Are you virtuous or verminous?'):
         if has_sentiment(s):
             print(layout.format(word, sentiment_value(s)))
 
+@uses_tkinter
 def draw_centered_map(center_state='TX', n=10):
     """Draw the n states closest to center_state."""
     centers = {name: find_state_center(us_states[name]) for name in us_states}
@@ -357,6 +375,7 @@ def draw_centered_map(center_state='TX', n=10):
     draw_dot(center, 1, 10)  # Mark the center state with a red dot
     wait()
 
+@uses_tkinter
 def draw_state_sentiments(state_sentiments):
     """Draw all U.S. states in colors corresponding to their sentiment value.
 
@@ -372,6 +391,7 @@ def draw_state_sentiments(state_sentiments):
         if center is not None:
             draw_name(name, center)
 
+@uses_tkinter
 def draw_map_for_query(term='my job', file_name='tweets2014.txt'):
     """Draw the sentiment map corresponding to the tweets that contain term.
 
@@ -395,6 +415,8 @@ def swap_tweet_representation(other=[make_tweet_fn, tweet_text_fn,
     swap_to = tuple(other)
     other[:] = [make_tweet, tweet_text, tweet_time, tweet_location]
     make_tweet, tweet_text, tweet_time, tweet_location = swap_to
+
+
 
 
 @main

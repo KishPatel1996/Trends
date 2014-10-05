@@ -355,6 +355,26 @@ def group_tweets_by_state(tweets):
     """
     "*** YOUR CODE HERE ***"
 
+
+    list_to_return=[]
+    for tweet in tweets:
+      closest_state = None
+      for state in us_states:
+        if closest_state==None:
+          closest_state=state
+        else:
+          state_center=find_state_center(us_states[state])
+          closest_state_center=find_state_center(us_states[closest_state])
+          if geo_distance(tweet_location(tweet),state_center)<geo_distance(tweet_location(tweet),closest_state_center):
+            closest_state=state
+
+
+      list_to_return+=[[closest_state,tweet]]
+
+    return group_by_key(list_to_return)
+
+
+
 def average_sentiments(tweets_by_state):
     """Calculate the average sentiment of the states by averaging over all
     the tweets from each state. Return the result as a dictionary from state

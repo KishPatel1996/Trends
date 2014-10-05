@@ -58,6 +58,7 @@ def tweet_location(tweet):
     "*** YOUR CODE HERE ***"
     return make_position(tweet[2],tweet[3])
 
+
 # tweet data abstraction (B), represented as a function
 # -----------------------------------------------------
 
@@ -216,12 +217,12 @@ def analyze_tweet_sentiment(tweet):
     False
     """
     "*** YOUR CODE HERE ***"
-    list_of_words=tweet_words(tweet)
-    sentiments=[sentiment_value(get_word_sentiment(word) for word in list_of_words if has_sentiment(get_word_sentiment(word))]
-    if sentiments==[]:
+    list_words=tweet_words(tweet)
+    list_sentiments=[sentiment_value(get_word_sentiment(word)) for word in list_words if has_sentiment(get_word_sentiment(word))]
+    if list_sentiments==[]:
       return make_sentiment(None)
 
-    return make_sentiment(sum(sentiments)/len(sentiments))
+    return make_sentiment(sum(list_sentiments)/len(list_sentiments))
 
 
 #################################

@@ -303,6 +303,14 @@ def find_state_center(polygons):
     -156.21763
     """
     "*** YOUR CODE HERE ***"
+    different_polygons=[find_centroid(polygon) for polygon in polygons]
+    total_x,total_y,total_area=0,0,0
+    for x,y,a in different_polygons:
+      total_x+=x*a
+      total_y+=y*a
+      total_area+=a
+    average_x,average_y=total_x/total_area,total_y/total_area
+    return make_position(average_x,average_y)
 
 
 ###################################

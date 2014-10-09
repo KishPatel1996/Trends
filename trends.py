@@ -217,11 +217,14 @@ def analyze_tweet_sentiment(tweet):
     False
     """
     "*** YOUR CODE HERE ***"
+    #broke up tweet into list of words
     list_words=tweet_words(tweet)
+    #creates a list of sentiments for each word in the list if it has sentiment.
     list_sentiments=[sentiment_value(get_word_sentiment(word)) for word in list_words if has_sentiment(get_word_sentiment(word))]
+    #return sentiment with None if there are no words with sentiment in the tweet
     if list_sentiments==[]:
       return make_sentiment(None)
-
+    #average the the list_sentiments by summing them and dividing it by the length of the list
     return make_sentiment(sum(list_sentiments)/len(list_sentiments))
 
 
@@ -259,8 +262,10 @@ def find_centroid(polygon):
     [1.0, 2.0, 0.0]
     """
     "*** YOUR CODE HERE ***"
+    #factored out (xi yi+1 - xi+1 yi) portion of Cx, Cy and Area formulas
     def poly_summer(i):
         return (latitude(polygon[i]) * longitude(polygon[i + 1])) - (latitude(polygon[i+1]) * longitude(polygon[i]))
+
     def find_poly_area():
         area, i = 0, 0
         while i < len(polygon) - 1:
@@ -270,12 +275,14 @@ def find_centroid(polygon):
     poly_area = find_poly_area()
     if poly_area == 0:
         return latitude(polygon[0]), longitude(polygon[0]), poly_area
+
     def find_center(fn):
         center, i = 0, 0
         while i < len(polygon) - 1:
             center += (fn(polygon[i]) + fn(polygon[i + 1])) * poly_summer(i)
             i += 1
         return center / (6 * poly_area)
+
     cx = find_center(latitude)
     cy = find_center(longitude)
     return cx, cy, abs(poly_area)
@@ -303,8 +310,10 @@ def find_state_center(polygons):
     -156.21763
     """
     "*** YOUR CODE HERE ***"
+    #list of different polygons that form a state
     different_polygons=[find_centroid(polygon) for polygon in polygons]
     total_x,total_y,total_area=0,0,0
+    #total all lat and long as well as area
     for x,y,a in different_polygons:
       total_x+=x*a
       total_y+=y*a
@@ -355,21 +364,24 @@ def group_tweets_by_state(tweets):
     """
     "*** YOUR CODE HERE ***"
 
-
+    #list to return to group by key
     list_to_return=[]
     for tweet in tweets:
-      closest_state = None
-      for state in us_states:
-        if closest_state==None:
-          closest_state=state
-        else:
-          state_center=find_state_center(us_states[state])
-          closest_state_center=find_state_center(us_states[closest_state])
-          if geo_distance(tweet_location(tweet),state_center)<geo_distance(tweet_location(tweet),closest_state_center):
+        closest_state = None
+        for state in us_states:
+          #sets first state to some random state so no errors are thrown when comparing distances
+          if closest_state==None:
             closest_state=state
+          else:
+            #compare distance of tweet from each state center
+            #if the state center was closer than closest_state,closest_state set = to the new state
+            state_center=find_state_center(us_states[state])
+            closest_state_center=find_state_center(us_states[closest_state])
+            if geo_distance(tweet_location(tweet),state_center)<geo_distance(tweet_location(tweet),closest_state_center):
+              closest_state=state
 
-
-      list_to_return+=[[closest_state,tweet]]
+        #after loop, closest state is found.  A list is added to the list_to_return
+        list_to_return+=[[closest_state,tweet]]
 
     return group_by_key(list_to_return)
 
